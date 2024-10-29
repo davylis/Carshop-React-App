@@ -3,9 +3,11 @@ import { fetchCars, deleteCar } from "../carapi";
 import { AgGridReact } from "ag-grid-react";
 import Button from "@mui/material/Button";
 import Snackbar from "@mui/material/Snackbar";
+import AddCar from "./AddCar";
+import EditCar from "./EditCar";
 
-import "ag-grid-community/styles/ag-grid.css"; // Mandatory CSS required by the Data Grid
-import "ag-grid-community/styles/ag-theme-material.css"; // Optional Theme applied to the Data Grid
+import "ag-grid-community/styles/ag-grid.css"; 
+import "ag-grid-community/styles/ag-theme-material.css"; 
 
 function CarList() {
   const [cars, setCars] = useState([]);
@@ -26,17 +28,27 @@ function CarList() {
     { headerName: "Year", field: "modelYear", filter: true, width: 120 },
     { field: "price", filter: true },
     {
+      cellRenderer: params => <EditCar
+        handleFetch = {handleFetch}
+        data={params.data} 
+        variant="contained"
+        color="primary"
+        size="small" 
+        />, 
+      width:120
+     },
+    {
       headerName: "Actions",
-      cellRenderer: (params) => (
-        <Button
+      cellRenderer: params =>  (<Button
           onClick={() => handleDelete(params.data._links.self.href)}
           variant="contained"
           color="secondary"
+          size="small"
         >
           Delete
         </Button>
       ),
-      width: 150,
+      width: 120,
     },
   ]);
 
@@ -68,6 +80,7 @@ function CarList() {
 
   return (
     <>
+    <AddCar handleFetch={handleFetch} />
       <div className="ag-theme-material" style={{ height: 500 }}>
         <AgGridReact
           rowData={cars}
